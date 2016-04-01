@@ -15,13 +15,14 @@ var makerPage = function(req, res) {
 };
 
 var makeDomo = function(req, res) {
-	if(!req.body.name || !req.body.age) {
-		return res.status(400).json({error: "RAWR! Both name and age are required"});
+	if(!req.body.name || !req.body.age || !req.body.level) {
+		return res.status(400).json({error: "RAWR! Name, age and level are required"});
 	}
 
 	var domoData = {
 		name: req.body.name,
 		age: req.body.age,
+		level: req.body.level,
 		owner: req.session.account._id
 	};
 
@@ -37,5 +38,16 @@ var makeDomo = function(req, res) {
 	});	
 };
 
+// Delete the domo when "Delete" is clicked!
+var deleteDomo = function(req, res) {
+	Domo.DomoModel.findByIdAndRemove(req.params.id, function(err, docs) {
+		if (err) {
+		 	return handleError(err);
+		}
+	});
+	res.redirect("/maker");
+};
+
 module.exports.makerPage = makerPage;
 module.exports.make = makeDomo;
+module.exports.deleteDomo = deleteDomo;
